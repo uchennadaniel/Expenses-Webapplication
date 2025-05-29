@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+<div class="container ">
+  <h3 class="mt-5"><b>Expense List</b></h3>
+  {% for expense in expenses %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow mb-3 bg-white rounded">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-2">{{ expense.expensename }}</div>
+            <div class="col-md-2">{{ expense.amount }}€</div>
+            <div class="col-md-2">{{ expense.date }}</div>
+            <div class="col-md-2">
+              <span class="badge badge-primary">{{ expense.category }}</span>
+              </div>
+            <div class="col-md-2">
+              <a href="/updateexpense/{{ expense.id }}" class="btn  btn-sm btn-success">Edit</a>
+            </div>
+            <div class="col-md-2">
+                <a href="/delete/{{ expense.id }}" class="btn  btn-sm btn-danger">Delete</a>
+            </div>
+          </div>
+        </div> 
+      </div> 
+    </div>
+  </div>
+  {% endfor %}
+
+
+  <div class="row bg-warning justify-content-md-center">
+    <div class="col-md-6">
+      <h3 class="mt-5">Total Expenses</h3>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Food</div>
+            <div id="t_food" class="col-md-6">{{t_food}}€</div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Utilities</div>
+            <div id="t_utilities" class="col-md-6">{{t_utilities}}€</div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Transport</div>
+            <div id="t_transport" class="col-md-6">{{t_transport}}€</div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Entertainment</div>
+            <div id="t_entertainment" class="col-md-6">{{t_entertainment}}€</div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Business</div>
+            <div id="t_business" class="col-md-6">{{t_business}}€</div>
+          </div>
+        </div>
+      </div>
+      <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Others</div>
+            <div id="t_others" class="col-md-6">{{t_others}}€</div>
+          </div>
+        </div>
+      </div>
+            <div class="card shadow mb-2 bg-white rounded">
+        <div class="card-body">
+          <div class ="row">
+            <div class="col-md-5">Total</div>
+            <div class="col-md-6">{{total}}€</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--</div>-->
+
+
+
+
+
+
+
+
+
+  <div class="col-md-6 mt-5">
+    <div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  
+  let food = document.getElementById('t_food').innerText
+  food = food.replace('€', '').trim();// Remove the euro sign and trim whitespace
+  let utilities = document.getElementById('t_utilities').innerText
+  utilities = utilities.replace('€', '').trim(); // Remove the euro sign and trim whitespace
+  let transport = document.getElementById('t_transport').innerText
+  transport = transport.replace('€', '').trim(); // Remove the euro sign and trim whitespace
+  let entertainment = document.getElementById('t_entertainment').innerText
+  entertainment = entertainment.replace('€', '').trim(); // Remove the euro sign and trim whitespace
+  let business = document.getElementById('t_business').innerText
+  business = business.replace('€', '').trim(); // Remove the euro sign and trim whitespace
+  let others = document.getElementById('t_others').innerText
+  others = others.replace('€', '').trim(); // Remove the euro sign and trim whitespace
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart =new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Food', 'Business', 'Transport', 'Entertainment', 'Utilities', 'Others'],
+      datasets: [{
+        label: '# of Votes',
+        data: [food, business, transport, entertainment, utilities, others],
+        borderWidth: 2
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+
+  </div>
+</div>
+{% endblock%}
