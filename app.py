@@ -23,20 +23,64 @@ class Expense(db.Model):
   expensename = db.Column(db.String(100), nullable=False)
   amount= db.Column(db.Integer, nullable=False)
   category = db.Column(db.String(100), nullable=False)
+  person = db.Column(db.String(100), nullable=False)  # NEW
   
 @app.route('/')
 def add():
   return render_template('add.html')
 
+@app.route('/expenses/<person>')
+def expenses_by_person(person):
+    expenses = Expense.query.filter_by(person=person).all()
+    # Berechne die Summen wie in deiner /expenses Route
+    total = 0
+    t_business = 0
+    t_food = 0
+    t_entertainment = 0
+    t_transport = 0
+    t_utilities = 0
+    t_others = 0
+
+    for expense in expenses:
+        total += expense.amount
+        if expense.category == 'Business':
+            t_business += expense.amount
+        elif expense.category == 'Food':
+            t_food += expense.amount 
+        elif expense.category == 'Entertainment':
+            t_entertainment += expense.amount
+        elif expense.category == 'Transport':
+            t_transport += expense.amount
+        elif expense.category == 'Others':
+            t_others += expense.amount
+        elif expense.category == 'Utilities':
+            t_utilities += expense.amount
+        elif expense.category.lower() in ['others', 'other']:
+            t_others += expense.amount
+
+    return render_template(
+        'expenses.html',
+        expenses=expenses,
+        total=total,
+        t_business=t_business,
+        t_food=t_food,
+        t_entertainment=t_entertainment,
+        t_transport=t_transport,
+        t_utilities=t_utilities,
+        t_others=t_others,
+        person=person
+    )
+
 
 
 @app.route('/expenses')
 def expenses():
-  # `expenses = Expense.query.all()` is a SQLAlchemy query that retrieves all the records from the
-  # `Expense` table in the database. It fetches all the rows from the `Expense` table and stores them
-  # in the `expenses` variable as a list of `Expense` objects.
-  expenses = Expense.query.all()
-  
+  person = request.args.get('person')
+  if person:
+    expenses = Expense.query.filter_by(person=person).all()
+  else:
+    expenses = Expense.query.all()
+      # NEW
   # The lines `total = 0`, `t_business = 0`, `t_food = 0`, `t_entertainment = 0`, `t_transport = 0`,
   # and `t_others = 0` are initializing variables to store the total amount spent in different
   # categories.
@@ -48,6 +92,7 @@ def expenses():
   t_business
   t_utilities = 0
   t_others = 0
+  #t_person=0
   
   # The code snippet `for expense in expenses: total += expense.amount` is iterating over each
   # `Expense` object in the `expenses` list retrieved from the database query. For each `Expense`
@@ -93,15 +138,14 @@ def edit():
   expensename = request.form['expensename']
   amount = request.form['amount']
   category = request.form['category']
-  
+  person = request.form['person']  # NEW
   expense = Expense.query.filter_by(id=id).first()
   expense.date = date
   expense.expensename = expensename
   expense.amount = amount
   expense.category = category
-  
+  expense.person = person
   db.session.commit()
-  
   return redirect('/expenses')
   
 
@@ -110,8 +154,9 @@ def addexpense():
   date = request.form['date']
   expensename = request.form['expensename']
   amount = request.form['amount']
+  person = request.form['person'] 
   category = request.form['category']
-  expense = Expense(date=date, expensename=expensename, amount=amount, category=category)
+  expense = Expense(date=date, expensename=expensename, amount=amount, category=category, person=person)
   db.session.add(expense)
   db.session.commit()
   return redirect("/expenses")

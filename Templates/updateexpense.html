@@ -10,7 +10,11 @@
       <div class="form-group">
         <label for="date">Date:</label>
         <input class="form-control" value = "{{expense.date}}" type="date" id="date" name="date" required><br>
-        <label for="name">Expense Name:</label>
+
+        <label for="name">Person:</label>
+        <input class="form-control" value = "{{expense.person}}" type="text" id="person" name="person" required><br>
+
+        <label for="name">Expense name:</label>
         <input class="form-control" value = "{{expense.expensename}}" type="text" id="expensename" name="expensename" required><br>
         <label for="amount">Amount:</label>
         <input class="form-control" value = "{{expense.amount}}" type="number" id="amount" name="amount" step="0.01" required><br>
